@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HrApp.Persistence.EfCore.Migrations
 {
-    public partial class InitHrApp : Migration
+    public partial class initHrApp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,8 +30,9 @@ namespace HrApp.Persistence.EfCore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.CheckConstraint("CK_Addresses_CHK_Address_Complex", "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
-                    table.CheckConstraint("CK_Addresses_CHK_Address_PostalCode", "PostalCode IS NOT NULL AND (Type = 'Residential' OR IsSameAsResidential = 1)");
+                    table.CheckConstraint("CK_Addresses_AddressType", "Type = Postal OR Type = Residential");
+                    table.CheckConstraint("CK_Addresses_Complex", "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
+                    table.CheckConstraint("CK_Addresses_PostalCode", "PostalCode IS NOT NULL AND (Type = 'Postal' OR IsSameAsResidential = 1)");
                 });
 
             migrationBuilder.CreateTable(
@@ -67,6 +68,7 @@ namespace HrApp.Persistence.EfCore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ContactDetails", x => x.Id);
+                    table.CheckConstraint("CK_ContactDetails_ContactDetailType", "Type = Email OR Type = Cellphone OR Type = Social Media OR Type = Landline");
                     table.ForeignKey(
                         name: "FK_ContactDetails_Employees_EmployeeId",
                         column: x => x.EmployeeId,
@@ -76,31 +78,34 @@ namespace HrApp.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeAddress",
+                name: "EmployeeAddresses",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TimeStampCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()"),
-                    TimeStampModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    AddressesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeAddress", x => new { x.EmployeeId, x.AddressId });
+                    table.PrimaryKey("PK_EmployeeAddresses", x => new { x.AddressesId, x.EmployeesId });
                     table.ForeignKey(
-                        name: "FK_EmployeeAddress_Addresses_AddressId",
-                        column: x => x.AddressId,
+                        name: "FK_EmployeeAddresses_Addresses_AddressesId",
+                        column: x => x.AddressesId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EmployeeAddress_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_EmployeeAddresses_Employees_EmployeesId",
+                        column: x => x.EmployeesId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactDetails_ContactInfo",
+                table: "ContactDetails",
+                column: "ContactInfo",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContactDetails_EmployeeId",
@@ -108,9 +113,9 @@ namespace HrApp.Persistence.EfCore.Migrations
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeAddress_AddressId",
-                table: "EmployeeAddress",
-                column: "AddressId");
+                name: "IX_EmployeeAddresses_EmployeesId",
+                table: "EmployeeAddresses",
+                column: "EmployeesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_EmployeeNumber",
@@ -125,7 +130,7 @@ namespace HrApp.Persistence.EfCore.Migrations
                 name: "ContactDetails");
 
             migrationBuilder.DropTable(
-                name: "EmployeeAddress");
+                name: "EmployeeAddresses");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

@@ -33,26 +33,42 @@ namespace HrApp.Persistence.EfCore
                 a.Property(a => a.Id)
                  .HasDefaultValueSql("NEWID()");
 
-                a.HasCheckConstraint("CHK_Address_Complex",
+                a.HasCheckConstraint("Complex",
                     "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
 
-                a.HasCheckConstraint("CHK_Address_PostalCode",
-                    "PostalCode IS NOT NULL AND (Type = 'Residential' OR IsSameAsResidential = 1)");
+                a.HasCheckConstraint("PostalCode",
+                    $"PostalCode IS NOT NULL AND (Type = '{AddressType.Postal}' OR IsSameAsResidential = 1)");
+
+                a.HasCheckConstraint("AddressType",
+                    $"Type = {AddressType.Postal} OR Type = {AddressType.Residential}");
+
+                a.HasIndex(a => 
+                new 
+                { 
+                    a.StreetName,
+                    a.StreetNumber,
+                    a.ComplexName,
+                    a.ComplexNumber,
+                    a.Suburb,
+                    a.City,
+                    a.EmployeeId
+                })
+                 .IsUnique();
+
+
+                a.HasOne(a => a.Employee)
+                 .WithMany(e => e.Addresses)
+                 .HasForeignKey(a => a.EmployeeId);
             });
             modelBuilder = SetCommonDataDefaults<Address>(modelBuilder);
-
-            modelBuilder.Entity<EmployeeAddress>(ea =>
-            {
-                ea.HasKey(ea => new { ea.EmployeeId, ea.AddressId });
-                ea.HasOne(ea => ea.Employee).WithMany(e => e.EmployeeAddresses).HasForeignKey(ea => ea.EmployeeId);
-                ea.HasOne(ea => ea.Address).WithMany(a => a.EmployeeAddresses).HasForeignKey(ea => ea.AddressId);
-            });
-            modelBuilder = SetCommonDataDefaults<EmployeeAddress>(modelBuilder);
 
             modelBuilder.Entity<ContactDetail>(c =>
             {
                 c.Property(c => c.Id)
                  .HasDefaultValueSql("NEWID()");
+
+                c.HasIndex(c => new { c.ContactInfo, c.EmployeeId })
+                 .IsUnique();
 
                 c.Property(c => c.Type)
                  .HasConversion(
@@ -60,8 +76,13 @@ namespace HrApp.Persistence.EfCore
                     t => Enum.Parse<ContactDetailType>(t.Replace(' ', '_'))
                 );
 
+                c.HasCheckConstraint("ContactDetailType",
+                    $"Type = {ContactDetailType.Email} OR Type = {ContactDetailType.Cellphone} OR Type = {ContactDetailType.Social_Media.ToString().Replace('_', ' ')} OR Type = {ContactDetailType.Landline}");
+
+
                 c.HasOne(c => c.Employee)
-                 .WithMany(e => e.ContactDetails);
+                 .WithMany(e => e.ContactDetails)
+                 .HasForeignKey(c => c.EmployeeId);
             });
             modelBuilder = SetCommonDataDefaults<ContactDetail>(modelBuilder);
         }

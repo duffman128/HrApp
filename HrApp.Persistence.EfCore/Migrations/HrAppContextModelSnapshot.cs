@@ -22,6 +22,21 @@ namespace HrApp.Persistence.EfCore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("AddressEmployee", b =>
+                {
+                    b.Property<Guid>("AddressesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AddressesId", "EmployeesId");
+
+                    b.HasIndex("EmployeesId");
+
+                    b.ToTable("EmployeeAddresses", (string)null);
+                });
+
             modelBuilder.Entity("HrApp.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -81,9 +96,11 @@ namespace HrApp.Persistence.EfCore.Migrations
 
                     b.ToTable("Addresses");
 
-                    b.HasCheckConstraint("CHK_Address_Complex", "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
+                    b.HasCheckConstraint("AddressType", "Type = Postal OR Type = Residential");
 
-                    b.HasCheckConstraint("CHK_Address_PostalCode", "PostalCode IS NOT NULL AND (Type = 'Residential' OR IsSameAsResidential = 1)");
+                    b.HasCheckConstraint("Complex", "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
+
+                    b.HasCheckConstraint("PostalCode", "PostalCode IS NOT NULL AND (Type = 'Postal' OR IsSameAsResidential = 1)");
                 });
 
             modelBuilder.Entity("HrApp.Models.ContactDetail", b =>
@@ -119,9 +136,14 @@ namespace HrApp.Persistence.EfCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContactInfo")
+                        .IsUnique();
+
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("ContactDetails");
+
+                    b.HasCheckConstraint("ContactDetailType", "Type = Email OR Type = Cellphone OR Type = Social Media OR Type = Landline");
                 });
 
             modelBuilder.Entity("HrApp.Models.Employee", b =>
@@ -166,32 +188,19 @@ namespace HrApp.Persistence.EfCore.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("HrApp.Models.EmployeeAddress", b =>
+            modelBuilder.Entity("AddressEmployee", b =>
                 {
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("HrApp.Models.Address", null)
+                        .WithMany()
+                        .HasForeignKey("AddressesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<Guid>("AddressId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<DateTime>("TimeStampCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("SYSDATETIME()");
-
-                    b.Property<DateTime?>("TimeStampModified")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EmployeeId", "AddressId");
-
-                    b.HasIndex("AddressId");
-
-                    b.ToTable("EmployeeAddress");
+                    b.HasOne("HrApp.Models.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HrApp.Models.ContactDetail", b =>
@@ -205,35 +214,9 @@ namespace HrApp.Persistence.EfCore.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("HrApp.Models.EmployeeAddress", b =>
-                {
-                    b.HasOne("HrApp.Models.Address", "Address")
-                        .WithMany("EmployeeAddresses")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HrApp.Models.Employee", "Employee")
-                        .WithMany("EmployeeAddresses")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("HrApp.Models.Address", b =>
-                {
-                    b.Navigation("EmployeeAddresses");
-                });
-
             modelBuilder.Entity("HrApp.Models.Employee", b =>
                 {
                     b.Navigation("ContactDetails");
-
-                    b.Navigation("EmployeeAddresses");
                 });
 #pragma warning restore 612, 618
         }

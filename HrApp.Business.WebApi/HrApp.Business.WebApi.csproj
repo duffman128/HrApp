@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HrApp.Interfaces\HrApp.Interfaces.csproj" />
     <ProjectReference Include="..\HrApp.Persistence.EfCore\HrApp.Persistence.EfCore.csproj" />
   </ItemGroup>
 

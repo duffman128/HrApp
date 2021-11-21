@@ -47,6 +47,7 @@ namespace HrApp.Models
         [Column(TypeName = "nvarchar(16)")]
         public AddressType Type { get; set; }
 
-        public ICollection<EmployeeAddress> EmployeeAddresses { get; set; }
+        public Guid EmployeeId { get; set; }
+        public Employee Employee { get; set; }
     }
 }

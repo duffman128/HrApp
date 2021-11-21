@@ -27,7 +27,7 @@ namespace HrApp.Models
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
-        public virtual ICollection<EmployeeAddress> EmployeeAddresses { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
 
         [Required]
         public virtual ICollection<ContactDetail> ContactDetails { get; set; }

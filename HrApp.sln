@@ -15,13 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Models", "HrApp.Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Interfaces", "HrApp.Interfaces\HrApp.Interfaces.csproj", "{5A566C05-905A-42E4-8684-AF57A4344C48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HrApp.Business.WebApi", "HrApp.Business.WebApi\HrApp.Business.WebApi.csproj", "{71928738-1611-4ECF-AB62-E203257BFE2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Business.WebApi", "HrApp.Business.WebApi\HrApp.Business.WebApi.csproj", "{71928738-1611-4ECF-AB62-E203257BFE2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HrApp.Business.WebApi.Tests", "HrApp.Business.WebApi.Tests\HrApp.Business.WebApi.Tests.csproj", "{FE6FF91B-734A-44BD-8C78-A925E4A0BB08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Business.WebApi.Tests", "HrApp.Business.WebApi.Tests\HrApp.Business.WebApi.Tests.csproj", "{FE6FF91B-734A-44BD-8C78-A925E4A0BB08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HrApp.BusinessRules", "HrApp.BusinessRules\HrApp.BusinessRules.csproj", "{41594B1E-42F7-405B-B13D-FB7C5445E180}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.BusinessRules", "HrApp.BusinessRules\HrApp.BusinessRules.csproj", "{41594B1E-42F7-405B-B13D-FB7C5445E180}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Persistence.EfCore", "HrApp.Persistence.EfCore\HrApp.Persistence.EfCore.csproj", "{DEC5AB1E-4DD2-4FDF-9E3A-E26F0AF7C266}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HrApp.Persistence.Repository", "HrApp.Persistence.Repository\HrApp.Persistence.Repository.csproj", "{51CA7A72-638D-42D7-AA03-B4B90A9EA060}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "HrApp-Presentation-Ng", "HrApp-Presentation-Ng\HrApp-Presentation-Ng.esproj", "{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +57,16 @@ Global
 		{DEC5AB1E-4DD2-4FDF-9E3A-E26F0AF7C266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEC5AB1E-4DD2-4FDF-9E3A-E26F0AF7C266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEC5AB1E-4DD2-4FDF-9E3A-E26F0AF7C266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51CA7A72-638D-42D7-AA03-B4B90A9EA060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51CA7A72-638D-42D7-AA03-B4B90A9EA060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51CA7A72-638D-42D7-AA03-B4B90A9EA060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51CA7A72-638D-42D7-AA03-B4B90A9EA060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +78,8 @@ Global
 		{FE6FF91B-734A-44BD-8C78-A925E4A0BB08} = {917EE000-4A26-43B6-AFA0-43C444D83897}
 		{41594B1E-42F7-405B-B13D-FB7C5445E180} = {917EE000-4A26-43B6-AFA0-43C444D83897}
 		{DEC5AB1E-4DD2-4FDF-9E3A-E26F0AF7C266} = {9E1DA5DD-B6E4-4785-8E05-162F7BC74A67}
+		{51CA7A72-638D-42D7-AA03-B4B90A9EA060} = {9E1DA5DD-B6E4-4785-8E05-162F7BC74A67}
+		{2A3E9697-FEBD-4375-96BD-69C163EB8F6F} = {22E6CA24-677A-4205-B6A8-27853D4C0068}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF7F2481-8C1C-411A-B1FD-078CADFAA82F}

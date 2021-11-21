@@ -27,6 +27,7 @@ namespace HrApp.Models
         [Column(TypeName = "nvarchar(16)")]
         public ContactDetailType Type { get; set; }
 
+        public Guid EmployeeId { get; set; }
         public Employee Employee { get; set; }
     }
 }
