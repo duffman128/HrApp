@@ -25,25 +25,27 @@ namespace HrApp.BusinessRules
             return employee;
         }
 
-        public async Task AddEmployeeAsync(Employee employee)
+        public async Task<Guid> GetEmployeeIdAsync(int employeeNumber)
         {
-            if (employee is null)
+            var employeeId = await employeeRepo.GetEmployeesQueryable()
+                .Where(e => e.EmployeeNumber == employeeNumber)
+                .Select(e => e.Id).FirstOrDefaultAsync();
+
+            if(employeeId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(employee));
+                throw new ArgumentException($"Employee with employee number {employeeNumber} does not exists.");
             }
 
-            var dbEmployee = await GetEmployeeByNumberAsync(employee.EmployeeNumber);
-            if (dbEmployee is null)
-            {
-                await employeeRepo.AddEmployeeAsync(employee);
-                return;
-            }
-            throw new ArgumentException("Employee already exists.");
-
+            return employeeId;
         }
 
         public async Task<Employee> GetEmployeeAsync(Guid employeeId)
         {
+            if (employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(employeeId));
+            }
+
             var employee = await employeeRepo.GetEmployeeAsync(employeeId);
             return employee;
         }
@@ -52,6 +54,23 @@ namespace HrApp.BusinessRules
         {
             var employees = await employeeRepo.GetEmployeesQueryable().ToListAsync();
             return employees;
+        }
+
+        public async Task<Guid> AddEmployeeAsync(Employee employee)
+        {
+            if (employee is null)
+            {
+                throw new ArgumentNullException(nameof(employee));
+            }
+
+            var doesEmployeeExist = await employeeRepo.GetEmployeesQueryable().Where(e => e.EmployeeNumber == employee.EmployeeNumber).AnyAsync();
+            if (!doesEmployeeExist)
+            {
+                await employeeRepo.AddEmployeeAsync(employee);
+                return employee.Id;
+            }
+            throw new ArgumentException("Employee already exists.");
+
         }
 
         public async Task UpdateEmployeeAsync(Employee employee)

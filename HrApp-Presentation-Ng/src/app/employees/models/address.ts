@@ -1,3 +1,5 @@
+import { Guid } from 'guid-typescript';
+
 export enum AddressType
 {
     Residential,
@@ -5,7 +7,7 @@ export enum AddressType
 }
 
 export interface Address{
-  Id: string;
+  Id: Guid;
   StreetNumber: string;
   StreetName: string;
   ComplexNumber: string;

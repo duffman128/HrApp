@@ -1,5 +1,11 @@
 using HrApp.Business.WebApi.Helpers;
+using HrApp.BusinessRules;
+using HrApp.Interfaces.BusinessRules;
+using HrApp.Interfaces.Persistence;
 using HrApp.Persistence.EfCore;
+using HrApp.Persistence.Repository;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -23,6 +29,18 @@ builder.Services.AddDbContext<HrAppContext>(options =>
 #endif
                 ;
 }, ServiceLifetime.Scoped);
+
+builder.Services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
+
+builder.Services
+    .AddScoped<IEmployeeRepo, EmployeeRepo>()
+    .AddScoped<IAddressRepo, AddressRepo>()
+    .AddScoped<IContactDetailRepo, ContactDetailRepo>();
+
+builder.Services
+    .AddScoped<IEmployeeRules, EmployeeRules>()
+    .AddScoped<IAddressRules, AddressRules>()
+    .AddScoped<IContactDetailRules, ContactDetailRules>();
 
 var app = builder.Build();
 
@@ -49,7 +67,12 @@ try
 
     app.MapControllers();
 
-    Log.Information("Starting web host");
+    app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true));
+
+Log.Information("Starting web host");
     app.Run();
     return 0;
 }

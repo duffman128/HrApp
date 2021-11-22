@@ -1,1 +1,57 @@
+<ng-template [ngIf]="employeeList.length > 0" [ngIfElse]="nodata"]>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Employees
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="employeeList" class="mat-elevation-z8">
 
+        <ng-template *ngFor="let employee of employeeList">
+        <ng-container matColumnDef="EmployeeNumber">
+          <th mat-header-cell *matHeaderCellDef>Employee Number</th>
+          <td mat-cell *matCellDef="employee"> {{employee.EmployeeNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="FirstName">
+          <th mat-header-cell *matHeaderCellDef>First Name</th>
+          <td mat-cell *matCellDef="employee"> {{employee.FirstName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="LastName">
+          <th mat-header-cell *matHeaderCellDef> Last Name </th>
+          <td mat-cell *matCellDef="employee"> {{employee.LastName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="DateOfBirth">
+          <th mat-header-cell *matHeaderCellDef> Date Of Birth </th>
+          <td mat-cell *matCellDef="employee"> {{employee.DateOfBirth}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </ng-template>
+      </table>
+      <br>
+      <button routerLink="/addemployee" mat-raised-button color="primary" >Add New Employee</button>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<ng-template #nodata>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        No Employees
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <p>Looks there's nothing to show.</p>
+        <p>CLick the link below to add a new employee.</p>
+      </div>
+      <button routerLink="/addemployee" mat-raised-button color="primary" >Add New Employee</button>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

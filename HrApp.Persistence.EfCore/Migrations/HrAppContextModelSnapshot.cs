@@ -22,21 +22,6 @@ namespace HrApp.Persistence.EfCore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AddressEmployee", b =>
-                {
-                    b.Property<Guid>("AddressesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EmployeesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("AddressesId", "EmployeesId");
-
-                    b.HasIndex("EmployeesId");
-
-                    b.ToTable("EmployeeAddresses", (string)null);
-                });
-
             modelBuilder.Entity("HrApp.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -55,6 +40,9 @@ namespace HrApp.Persistence.EfCore.Migrations
                     b.Property<string>("ComplexNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(16)");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -94,13 +82,18 @@ namespace HrApp.Persistence.EfCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("StreetName", "StreetNumber", "ComplexName", "ComplexNumber", "Suburb", "City", "EmployeeId")
+                        .IsUnique();
+
                     b.ToTable("Addresses");
 
-                    b.HasCheckConstraint("AddressType", "Type = Postal OR Type = Residential");
+                    b.HasCheckConstraint("AddressType", "[Type] = 'Postal' OR [Type] = 'Residential'");
 
-                    b.HasCheckConstraint("Complex", "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
+                    b.HasCheckConstraint("Complex", "[ComplexNumber] IS NOT NULL AND [ComplexName] IS NOT NULL");
 
-                    b.HasCheckConstraint("PostalCode", "PostalCode IS NOT NULL AND (Type = 'Postal' OR IsSameAsResidential = 1)");
+                    b.HasCheckConstraint("PostalCode", "[PostalCode] IS NOT NULL AND ([Type] = 'Postal' OR [IsSameAsResidential] = 1)");
                 });
 
             modelBuilder.Entity("HrApp.Models.ContactDetail", b =>
@@ -136,14 +129,14 @@ namespace HrApp.Persistence.EfCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactInfo")
-                        .IsUnique();
-
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ContactInfo", "EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("ContactDetails");
 
-                    b.HasCheckConstraint("ContactDetailType", "Type = Email OR Type = Cellphone OR Type = Social Media OR Type = Landline");
+                    b.HasCheckConstraint("ContactDetailType", "[Type] = 'Email' OR [Type] = 'Cellphone' OR [Type] = 'Social Media' OR [Type] = 'Landline'");
                 });
 
             modelBuilder.Entity("HrApp.Models.Employee", b =>
@@ -188,19 +181,15 @@ namespace HrApp.Persistence.EfCore.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("AddressEmployee", b =>
+            modelBuilder.Entity("HrApp.Models.Address", b =>
                 {
-                    b.HasOne("HrApp.Models.Address", null)
-                        .WithMany()
-                        .HasForeignKey("AddressesId")
+                    b.HasOne("HrApp.Models.Employee", "Employee")
+                        .WithMany("Addresses")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HrApp.Models.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("EmployeesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("HrApp.Models.ContactDetail", b =>
@@ -216,6 +205,8 @@ namespace HrApp.Persistence.EfCore.Migrations
 
             modelBuilder.Entity("HrApp.Models.Employee", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("ContactDetails");
                 });
 #pragma warning restore 612, 618

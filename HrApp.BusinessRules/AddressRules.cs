@@ -21,6 +21,10 @@ namespace HrApp.BusinessRules
 
         public async Task<IEnumerable<Address>> GetAddresseseAsync(Guid employeeId)
         {
+            if(employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(employeeId));
+            }
             var addresses = await addressRepo.GetAddressesQueryable(employeeId).ToListAsync();
             return addresses;
         }

@@ -21,10 +21,6 @@ namespace HrApp.Persistence.EfCore
                  .HasDefaultValueSql("NEWID()");
                 e.HasIndex(e => e.EmployeeNumber)
                  .IsUnique();
-                e.Property(e => e.DateOfBirth)
-                 .HasConversion(
-                    d => d.ToDateTime(new TimeOnly(0, 0)),
-                    dt => new DateOnly(dt.Year, dt.Month, dt.Day));
             });
             modelBuilder = SetCommonDataDefaults<Employee>(modelBuilder);
 
@@ -34,13 +30,13 @@ namespace HrApp.Persistence.EfCore
                  .HasDefaultValueSql("NEWID()");
 
                 a.HasCheckConstraint("Complex",
-                    "ComplexNumber IS NOT NULL AND ComplexName IS NOT NULL");
+                    "[ComplexNumber] IS NOT NULL AND [ComplexName] IS NOT NULL");
 
                 a.HasCheckConstraint("PostalCode",
-                    $"PostalCode IS NOT NULL AND (Type = '{AddressType.Postal}' OR IsSameAsResidential = 1)");
+                    $"[PostalCode] IS NOT NULL AND ([Type] = '{AddressType.Postal}' OR [IsSameAsResidential] = 1)");
 
                 a.HasCheckConstraint("AddressType",
-                    $"Type = {AddressType.Postal} OR Type = {AddressType.Residential}");
+                    $"[Type] = '{AddressType.Postal}' OR [Type] = '{AddressType.Residential}'");
 
                 a.HasIndex(a => 
                 new 
@@ -77,7 +73,7 @@ namespace HrApp.Persistence.EfCore
                 );
 
                 c.HasCheckConstraint("ContactDetailType",
-                    $"Type = {ContactDetailType.Email} OR Type = {ContactDetailType.Cellphone} OR Type = {ContactDetailType.Social_Media.ToString().Replace('_', ' ')} OR Type = {ContactDetailType.Landline}");
+                    $"[Type] = '{ContactDetailType.Email}' OR [Type] = '{ContactDetailType.Cellphone}' OR [Type] = '{ContactDetailType.Social_Media.ToString().Replace('_', ' ')}' OR [Type] = '{ContactDetailType.Landline}'");
 
 
                 c.HasOne(c => c.Employee)

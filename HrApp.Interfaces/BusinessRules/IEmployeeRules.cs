@@ -12,7 +12,8 @@ namespace HrApp.Interfaces.BusinessRules
         public Task<IEnumerable<Employee>> GetEmployeesAsync();
         public Task<Employee> GetEmployeeAsync(Guid employeeId);
         public Task<Employee> GetEmployeeByNumberAsync(int employeeNumber);
-        public Task AddEmployeeAsync(Employee employee);
+        public Task<Guid> GetEmployeeIdAsync(int employeeNumber);
+        public Task<Guid> AddEmployeeAsync(Employee employee);
         public Task UpdateEmployeeAsync(Employee employee);
     }
 }

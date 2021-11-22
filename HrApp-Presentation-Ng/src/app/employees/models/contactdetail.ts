@@ -1,11 +1,13 @@
+import { Guid } from 'guid-typescript';
+
 export enum ContactDetailType{
   Landline,
   Cellphone,
   Email,
-  Social_Media
+  'Social Media'
 }
 export interface ContactDetail{
-  Id: string;
+  Id: Guid;
   ContactInfo: string;
   Type: ContactDetailType;
   EmployeeId: string;

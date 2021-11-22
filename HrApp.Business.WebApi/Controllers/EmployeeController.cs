@@ -23,7 +23,6 @@ namespace HrApp.Business.WebApi.Controllers
             return Ok(employees);
         }
 
-
         [HttpGet("getemployee/{employeeid}")]
         public async Task<IActionResult> GetEmployeeAsync(Guid employeeId)
         {
@@ -31,11 +30,18 @@ namespace HrApp.Business.WebApi.Controllers
             return Ok(employee);
         }
 
+        [HttpGet("getemployeebynumber/{employeeNumber}")]
+        public async Task<IActionResult> GetEmployeeByNumberAsync(int employeeNumber)
+        {
+            var employee = await employeeRules.GetEmployeeByNumberAsync(employeeNumber);
+            return Ok(employee);
+        }
+
         [HttpPost("postemployee")]
         public async Task<IActionResult> PostEmployeeAsync([FromBody] Employee employee)
         {
-            await employeeRules.AddEmployeeAsync(employee);
-            return Ok();
+            var employeeId = await employeeRules.AddEmployeeAsync(employee);
+            return Ok(employeeId);
         }
 
         [HttpPut("putemployee")]

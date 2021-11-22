@@ -24,12 +24,10 @@ namespace HrApp.Models
         public string LastName { get; set; }
 
         [Required]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
-        [Required]
         public virtual ICollection<Address> Addresses { get; set; }
 
-        [Required]
         public virtual ICollection<ContactDetail> ContactDetails { get; set; }
 
     }

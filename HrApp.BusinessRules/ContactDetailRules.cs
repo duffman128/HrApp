@@ -22,59 +22,13 @@ namespace HrApp.BusinessRules
 
         public async Task<IEnumerable<ContactDetail>> GetContactDetailsAsync(Guid employeeId)
         {
+            if (employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(employeeId));
+            }
+
             var contactDetails = await contactDetailRepo.GetContactDetailsQueryable(employeeId).ToListAsync();
             return contactDetails;
-        }
-
-        public async Task AddContactDetailAsync(ContactDetail contactDetail)
-        {
-            if (contactDetail is null)
-            {
-                throw new ArgumentNullException(nameof(contactDetail));
-            }
-
-            if(!GetContactDetailTypeRegex(contactDetail.Type).IsMatch(contactDetail.ContactInfo))
-            {
-                throw new ArgumentException($"Invalid {contactDetail.Type.ToString().Replace('_', ' ')} '{contactDetail.ContactInfo}'.");
-            }
-
-            var dbContactDetail = await contactDetailRepo.
-                GetContactDetailsQueryable(contactDetail.EmployeeId).Where(c => c.ContactInfo == contactDetail.ContactInfo)
-                .FirstOrDefaultAsync();
-
-            if(dbContactDetail is null)
-            {
-
-                await contactDetailRepo.AddContactDetailAsync(contactDetail);
-                return;
-            }
-
-            throw new ArgumentException("Employee contact info already exists.");
-        }
-
-        public async Task UpdateContactDetailAsync(ContactDetail contactDetail)
-        {
-            if (contactDetail is null)
-            {
-                throw new ArgumentNullException(nameof(contactDetail));
-            }
-
-            if (!GetContactDetailTypeRegex(contactDetail.Type).IsMatch(contactDetail.ContactInfo))
-            {
-                throw new ArgumentException($"Invalid {contactDetail.Type.ToString().Replace('_', ' ')} '{contactDetail.ContactInfo}'.");
-            }
-
-            var dbContactDetail = await contactDetailRepo.GetContactDetailAsync(contactDetail.Id);
-
-            if (dbContactDetail is not null)
-            {
-                dbContactDetail.ContactInfo = contactDetail.ContactInfo;
-                dbContactDetail.Type = contactDetail.Type;
-                dbContactDetail.TimeStampModified = DateTime.Now;
-
-                await contactDetailRepo.UpdateContactDetailAsync();
-            }
-            throw new ArgumentException("Employee contact info already exists.");
         }
 
         private Regex GetContactDetailTypeRegex(ContactDetailType contactDetailType)
@@ -90,6 +44,53 @@ namespace HrApp.BusinessRules
                     return new Regex(@"^((ftp|http|https):\/\/)?$");
             }
             throw new ArgumentOutOfRangeException("ContactDetailType enum does not exist");
+        }
+
+        public async Task AddContactDetailAsync(ContactDetail contactDetail)
+        {
+            CheckContactDetail(contactDetail);
+
+            var doesContactDetailExist = await contactDetailRepo.
+                GetContactDetailsQueryable(contactDetail.EmployeeId).Where(c => c.ContactInfo == contactDetail.ContactInfo)
+                .Take(1).AnyAsync();
+
+            if (!doesContactDetailExist)
+            {
+                await contactDetailRepo.AddContactDetailAsync(contactDetail);
+                return;
+            }
+
+            throw new ArgumentException("Employee contact info already exists.");
+        }
+
+        public async Task UpdateContactDetailAsync(ContactDetail contactDetail)
+        {
+            CheckContactDetail(contactDetail);
+
+            var dbContactDetail = await contactDetailRepo.GetContactDetailAsync(contactDetail.Id);
+
+            if (dbContactDetail is not null)
+            {
+                dbContactDetail.ContactInfo = contactDetail.ContactInfo;
+                dbContactDetail.Type = contactDetail.Type;
+                dbContactDetail.TimeStampModified = DateTime.Now;
+
+                await contactDetailRepo.UpdateContactDetailAsync();
+            }
+            throw new ArgumentException("Employee contact info already exists.");
+        }
+
+        private void CheckContactDetail(ContactDetail contactDetail)
+        {
+            if (contactDetail is null)
+            {
+                throw new ArgumentNullException(nameof(contactDetail));
+            }
+
+            if (!GetContactDetailTypeRegex(contactDetail.Type).IsMatch(contactDetail.ContactInfo))
+            {
+                throw new ArgumentException($"Invalid {contactDetail.Type.ToString().Replace('_', ' ')} '{contactDetail.ContactInfo}'.");
+            }
         }
     }
 }

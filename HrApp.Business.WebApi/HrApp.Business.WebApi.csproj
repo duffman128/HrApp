@@ -19,8 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HrApp.BusinessRules\HrApp.BusinessRules.csproj" />
     <ProjectReference Include="..\HrApp.Interfaces\HrApp.Interfaces.csproj" />
     <ProjectReference Include="..\HrApp.Persistence.EfCore\HrApp.Persistence.EfCore.csproj" />
+    <ProjectReference Include="..\HrApp.Persistence.Repository\HrApp.Persistence.Repository.csproj" />
   </ItemGroup>
 
 </Project>
